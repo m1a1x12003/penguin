@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Google Sheet Widget</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #00ff88;
+      font-size: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* 靠上 */
+      align-items: center; /* 水平置中 */
+      height: 100vh;
+      margin: 1em 0 0 0; /* 頂部留點空間 */
+      font-family: sans-serif;
+    }
+    #label {
+      color: white;
+      font-weight: bold;
+      margin-bottom: 0.2em;
+    }
+    #value {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="label">企鵝家用餘額</div>
+  <div id="value">載入中...</div>
+  <script>
+    fetch("https://script.google.com/macros/s/AKfycbxSexjlsRvsE6-OUy8hZTwvUblwCpLeRLuEh-asy_CpmmcPoXdl1hv-HC8XoPjr5SA05g/exec")
+      .then(response => response.text())
+      .then(text => {
+        document.getElementById("value").textContent = text;
+      })
+      .catch(() => {
+        document.getElementById("value").textContent = "載入失敗";
+      });
+  </script>
+</body>
+</html>
