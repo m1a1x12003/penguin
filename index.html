@@ -50,14 +50,30 @@
         const historyDiv = document.getElementById("history");
         const title = document.createElement("div");
         title.textContent = "最近五筆：";
-        title.style.color = "white"; // 標題白色
+        title.style.color = "white";
         historyDiv.appendChild(title);
 
         historyLines.forEach(line => {
-          const row = document.createElement("div");
-          row.textContent = line;
-          row.style.color = line.includes("支出") ? "red" : "white"; // 支出紅色，其餘白色
-          historyDiv.appendChild(row);
+          const match = line.match(/^(\d{4}\/\d{2}\/\d{2})\s+(收入|支出)：(.+?)\s+(.+?)\s+([+-]\d+)\（(.+?)\）$/);
+          if (match) {
+            const [_, date, type, payer, detail, amount, balance] = match;
+
+            const line1 = document.createElement("div");
+            line1.textContent = `${date} ${type}：${payer}`;
+            line1.style.color = type === "支出" ? "red" : "white";
+
+            const line2 = document.createElement("div");
+            line2.textContent = `${detail} ${amount}（${balance}）`;
+            line2.style.color = type === "支出" ? "red" : "white";
+
+            historyDiv.appendChild(line1);
+            historyDiv.appendChild(line2);
+          } else {
+            const row = document.createElement("div");
+            row.textContent = line;
+            row.style.color = "white";
+            historyDiv.appendChild(row);
+          }
         });
       })
       .catch(() => {
