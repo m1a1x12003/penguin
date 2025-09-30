@@ -54,20 +54,14 @@
       historyDiv.appendChild(title);
 
       historyLines.forEach(line => {
-        const match = line.match(/^(\d{4})\/(\d{2})\/(\d{2})\s+(收入|支出)：(.+?)\s+(.+?)\s+([+-]?\d+)\（(.+?)\）$/);
+        const match = line.match(/^(\d{4})\/(\d{2})\/(\d{2})\s+(收入|支出)：(.+?)\s+(.+?)\s+([+-]?\d+)\（(\d+)\）$/);
         if (match) {
           const [_, year, month, day, type, payer, detail, amount, balance] = match;
           const date = `${month}/${day}`;
           const row = document.createElement("div");
 
-          // 結算金額粗體處理
-          const balanceSpan = document.createElement("span");
-          balanceSpan.textContent = ` = ${balance}`;
-          balanceSpan.style.fontWeight = "bold";
-
-          // 主文字
-          row.textContent = `${date} ${detail} ${amount}`;
-          row.appendChild(balanceSpan);
+          // 主文字（不加粗）
+          row.textContent = `${date} ${detail} ${amount} = ${balance}`;
 
           // 顏色設定
           row.style.color = type === "支出" ? "#00ff88" : "white";
