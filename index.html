@@ -68,9 +68,9 @@
           row.style.margin = "0 auto";
           row.style.color = color;
 
-          // 左側：日期 + 明細 + 金額 + =
+          // 左側：日期 + 明細 + 金額（不含 =）
           const left = document.createElement("span");
-          left.textContent = `${date} ${detail} ${amount} =`;
+          left.textContent = `${date} ${detail} ${amount}`;
 
           // 右側：結算金額
           const right = document.createElement("span");
