@@ -11,10 +11,10 @@
       font-size: 60px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start; /* 靠上 */
-      align-items: center; /* 水平置中 */
+      justify-content: flex-start;
+      align-items: center;
       height: 100vh;
-      margin: 1em 0 0 0; /* 頂部留點空間 */
+      margin: 1em 0 0 0;
       font-family: sans-serif;
     }
     #label {
@@ -25,16 +25,40 @@
     #value {
       font-weight: bold;
     }
+    #history {
+      font-size: 0.5em;
+      margin-top: 0.5em;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <div id="label">企鵝家用餘額</div>
   <div id="value">載入中...</div>
+  <div id="history"></div>
+
   <script>
     fetch("https://script.google.com/macros/s/AKfycbyIkCZwxUYMNF46ZmpkRliPqVAMUWkziH0tNOMlerr28npByMysQDiscSHo05_IN0xTRA/exec")
       .then(response => response.text())
       .then(text => {
-        document.getElementById("value").textContent = text;
+        const lines = text.trim().split('\n');
+        const latest = lines[0];
+        const historyLines = lines.slice(1);
+
+        document.getElementById("value").textContent = latest;
+
+        const historyDiv = document.getElementById("history");
+        const title = document.createElement("div");
+        title.textContent = "最近五筆：";
+        title.style.color = "white"; // 標題白色
+        historyDiv.appendChild(title);
+
+        historyLines.forEach(line => {
+          const row = document.createElement("div");
+          row.textContent = line;
+          row.style.color = line.includes("支出") ? "red" : "white"; // 支出紅色，其餘白色
+          historyDiv.appendChild(row);
+        });
       })
       .catch(() => {
         document.getElementById("value").textContent = "載入失敗";
