@@ -54,19 +54,21 @@
       historyDiv.appendChild(title);
 
       historyLines.forEach(line => {
+        // 嘗試解析格式：日期、類型、付款人、明細、金額、結算
         const match = line.match(/^(\d{4})\/(\d{2})\/(\d{2})\s+(收入|支出)：(.+?)\s+(.+?)\s+([+-]?\d+)\（(\d+)\）$/);
         if (match) {
           const [_, year, month, day, type, payer, detail, amount, balance] = match;
           const date = `${month}/${day}`;
           const row = document.createElement("div");
-
-          // 主文字（不加粗）
           row.textContent = `${date} ${detail} ${amount} = ${balance}`;
-
-          // 顏色設定
           row.style.color = type === "支出" ? "#00ff88" : "white";
-
           historyDiv.appendChild(row);
+        } else {
+          // 如果解析失敗，直接顯示原始行
+          const fallback = document.createElement("div");
+          fallback.textContent = line;
+          fallback.style.color = "white";
+          historyDiv.appendChild(fallback);
         }
       });
     })
