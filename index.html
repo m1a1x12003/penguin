@@ -28,7 +28,20 @@
     #history {
       font-size: 0.5em;
       margin-top: 0.5em;
-      text-align: center;
+      width: 100%;
+      max-width: 600px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.1em 0;
+    }
+    .left {
+      text-align: left;
+    }
+    .right {
+      text-align: right;
+      color: #6699cc;
     }
   </style>
 </head>
@@ -37,55 +50,50 @@
   <div id="value">載入中...</div>
   <div id="history"></div>
 
-<script>
-  fetch("https://script.google.com/macros/s/AKfycbymTRZO7Q9GdjHVkOD00U0yh_MNm1af-sHdoOnuuIE7PoZzCVYex3m7iHH0eIXaqdAx/exec")
-    .then(response => response.text())
-    .then(text => {
-      const lines = text.trim().split('\n');
-      const latest = lines[0];
-      const historyLines = lines.slice(1);
+  <script>
+    fetch("https://script.google.com/macros/s/AKfycbymTRZO7Q9GdjHVkOD00U0yh_MNm1af-sHdoOnuuIE7PoZzCVYex3m7iHH0eIXaqdAx/exec")
+      .then(response => response.text())
+      .then(text => {
+        const lines = text.trim().split('\n');
+        const latest = lines[0];
+        const historyLines = lines.slice(1);
 
-      document.getElementById("value").textContent = latest;
+        document.getElementById("value").textContent = latest;
 
-      const historyDiv = document.getElementById("history");
-      const title = document.createElement("div");
-      title.textContent = "最近五筆：";
-      title.style.color = "white";
-      historyDiv.appendChild(title);
+        const historyDiv = document.getElementById("history");
+        const title = document.createElement("div");
+        title.textContent = "最近五筆：";
+        title.style.color = "white";
+        historyDiv.appendChild(title);
 
-      historyLines.forEach(line => {
-        const match = line.match(/^(\d{4})\/(\d{2})\/(\d{2})\s+(收入|支出)：(.+?)\s+(.+?)\s+([+-]?\d+)\（(\d+)\）$/);
-        if (match) {
-          const [_, year, month, day, type, payer, detail, amount, balance] = match;
-          const date = `${month}/${day}`;
-          const color = type === "支出" ? "#00ff88" : "white";
+        historyLines.forEach(line => {
+          const match = line.match(/^(\d{4})\/(\d{2})\/(\d{2})\s+(收入|支出)：(.+?)\s+(.+?)\s+([+-]?\d+)\（(\d+)\）$/);
+          if (match) {
+            const [_, year, month, day, type, payer, detail, amount, balance] = match;
+            const date = `${month}/${day}`;
+            const color = type === "支出" ? "#00ff88" : "white";
 
-          const row = document.createElement("div");
-          row.style.display = "flex";
-          row.style.justifyContent = "space-between";
-          row.style.width = "100%";
-          row.style.maxWidth = "600px";
-          row.style.margin = "0 auto";
-          row.style.color = color;
+            const row = document.createElement("div");
+            row.className = "row";
 
-          // 左側：日期 + 明細 + 金額（不含 =）
-          const left = document.createElement("span");
-          left.textContent = `${date} ${detail} ${amount}`;
+            const left = document.createElement("span");
+            left.className = "left";
+            left.textContent = `${date} ${detail} ${amount}`;
+            left.style.color = color;
 
-          // 右側：結算金額（不含任何符號）
-          const right = document.createElement("span");
-          right.textContent = balance;
-          right.style.color = "#6699cc"; // 灰藍色
+            const right = document.createElement("span");
+            right.className = "right";
+            right.textContent = balance;
 
-          row.appendChild(left);
-          row.appendChild(right);
-          historyDiv.appendChild(row);
-        }
+            row.appendChild(left);
+            row.appendChild(right);
+            historyDiv.appendChild(row);
+          }
+        });
+      })
+      .catch(() => {
+        document.getElementById("value").textContent = "載入失敗";
       });
-    })
-    .catch(() => {
-      document.getElementById("value").textContent = "載入失敗";
-    });
-</script>
+  </script>
 </body>
 </html>
