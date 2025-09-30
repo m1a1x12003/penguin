@@ -37,48 +37,48 @@
   <div id="value">載入中...</div>
   <div id="history"></div>
 
-  <script>
-    fetch("https://script.google.com/macros/s/AKfycbyIkCZwxUYMNF46ZmpkRliPqVAMUWkziH0tNOMlerr28npByMysQDiscSHo05_IN0xTRA/exec")
-      .then(response => response.text())
-      .then(text => {
-        const lines = text.trim().split('\n');
-        const latest = lines[0];
-        const historyLines = lines.slice(1);
+<script>
+  fetch("https://script.google.com/macros/s/AKfycbyIkCZwxUYMNF46ZmpkRliPqVAMUWkziH0tNOMlerr28npByMysQDiscSHo05_IN0xTRA/exec")
+    .then(response => response.text())
+    .then(text => {
+      const lines = text.trim().split('\n');
+      const latest = lines[0];
+      const historyLines = lines.slice(1);
 
-        document.getElementById("value").textContent = latest;
+      document.getElementById("value").textContent = latest;
 
-        const historyDiv = document.getElementById("history");
-        const title = document.createElement("div");
-        title.textContent = "最近五筆：";
-        title.style.color = "white";
-        historyDiv.appendChild(title);
+      const historyDiv = document.getElementById("history");
+      const title = document.createElement("div");
+      title.textContent = "最近五筆：";
+      title.style.color = "white";
+      historyDiv.appendChild(title);
 
-        historyLines.forEach(line => {
-          const match = line.match(/^(\d{4}\/\d{2}\/\d{2})\s+(收入|支出)：(.+?)\s+(.+?)\s+([+-]\d+)\（(.+?)\）$/);
-          if (match) {
-            const [_, date, type, payer, detail, amount, balance] = match;
+      historyLines.forEach(line => {
+        const match = line.match(/^(\d{4})\/(\d{2})\/(\d{2})\s+(收入|支出)：(.+?)\s+(.+?)\s+([+-]?\d+)\（(.+?)\）$/);
+        if (match) {
+          const [_, year, month, day, type, payer, detail, amount, balance] = match;
+          const date = `${month}/${day}`;
+          const row = document.createElement("div");
 
-            const line1 = document.createElement("div");
-            line1.textContent = `${date} ${type}：${payer}`;
-            line1.style.color = type === "支出" ? "red" : "white";
+          // 結算金額粗體處理
+          const balanceSpan = document.createElement("span");
+          balanceSpan.textContent = ` = ${balance}`;
+          balanceSpan.style.fontWeight = "bold";
 
-            const line2 = document.createElement("div");
-            line2.textContent = `${detail} ${amount}（${balance}）`;
-            line2.style.color = type === "支出" ? "red" : "white";
+          // 主文字
+          row.textContent = `${date} ${detail} ${amount}`;
+          row.appendChild(balanceSpan);
 
-            historyDiv.appendChild(line1);
-            historyDiv.appendChild(line2);
-          } else {
-            const row = document.createElement("div");
-            row.textContent = line;
-            row.style.color = "white";
-            historyDiv.appendChild(row);
-          }
-        });
-      })
-      .catch(() => {
-        document.getElementById("value").textContent = "載入失敗";
+          // 顏色設定
+          row.style.color = type === "支出" ? "#00ff88" : "white";
+
+          historyDiv.appendChild(row);
+        }
       });
-  </script>
+    })
+    .catch(() => {
+      document.getElementById("value").textContent = "載入失敗";
+    });
+</script>
 </body>
 </html>
