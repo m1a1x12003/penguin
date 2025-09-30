@@ -58,20 +58,26 @@
         if (match) {
           const [_, year, month, day, type, payer, detail, amount, balance] = match;
           const date = `${month}/${day}`;
+          const color = type === "支出" ? "#00ff88" : "white";
+
           const row = document.createElement("div");
+          row.style.display = "flex";
+          row.style.justifyContent = "space-between";
+          row.style.width = "100%";
+          row.style.maxWidth = "600px";
+          row.style.margin = "0 auto";
+          row.style.color = color;
 
-          // 結算金額粗體處理（不顯示「結算：」）
-          const balanceSpan = document.createElement("span");
-          balanceSpan.textContent = ` = ${balance}`;
-          balanceSpan.style.fontWeight = "bold";
+          // 左側：日期 + 明細 + 金額 + =
+          const left = document.createElement("span");
+          left.textContent = `${date} ${detail} ${amount} =`;
 
-          // 主文字
-          row.textContent = `${date} ${detail} ${amount}`;
-          row.appendChild(balanceSpan);
+          // 右側：結算金額
+          const right = document.createElement("span");
+          right.textContent = balance;
 
-          // 顏色設定
-          row.style.color = type === "支出" ? "#00ff88" : "white";
-
+          row.appendChild(left);
+          row.appendChild(right);
           historyDiv.appendChild(row);
         }
       });
